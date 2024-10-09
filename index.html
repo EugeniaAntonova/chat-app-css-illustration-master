@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400,500,700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <title>Frontend Mentor | [Challenge Name Here]</title>
+
+</head>
+
+<body>
+  <main>
+    <section class="hero">
+      <div class="decor decor--bright"></div>
+      <div class="decor decor--subtle"></div>
+      <div class="content">
+        <div class="illustration">
+          <div class="phone-mockup">
+            <div class="phone-header">
+              <span class="arrow-back">
+                <svg width="8" height="12" viewbox="0 0 6 12" fill="none">
+                  <path stroke="#fff" stroke-width="2" d="M 3,0 L 0,6 L 3,12"/>
+                </svg>
+              </span>
+              <div class="content">
+                <div class="avatar-wrapper">
+                  <img src="./images/avatar.jpg" alt="" class="avatar">
+                </div>
+                <span class="name">
+                  Samuel Green
+                </span>
+                <span class="status">
+                  Available to Walk
+                </span>
+              </div>
+              <span class="menu">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </span>
+            </div>
+            <div class="phone-body">
+              <div class="messages">
+                <div class="income-message message">
+                  <span class="text">
+                    That sounds great. I’d be happy with that.
+                  </span>
+                </div>
+                <div class="income-message message">
+                  <span class="text">
+                    Could you send over some pictures of your dog, please?
+                  </span>
+                </div>
+                <div class="sent-message message">
+                  <div class="attachment">
+                    <img src="./images/dog-image-1.jpg" alt="">
+                    <img src="./images/dog-image-2.jpg" alt="">
+                    <img src="./images/dog-image-3.jpg" alt="">
+                  </div>
+                  <span class="text">
+                    Here are a few pictures. She’s a happy girl!
+                  </span>
+                </div>
+                <div class="sent-message message">
+                  <span class="text">
+                    Can you make it?
+                  </span>
+                </div>
+                <div class="income-message message">
+                  <span class="text">
+                    She looks so happy! The time we discussed works. How long shall I take her out for?
+                  </span>
+                </div>
+                <div class="walk-option">
+                  <span class="radio"></span>
+                  <span class="text">
+                    30 minute walk
+                  </span>
+                  <span class="price">
+                    $29
+                  </span>
+                </div>
+                <div class="walk-option">
+                  <span class="radio"></span>
+                  <span class="text">
+                    1 hour walk
+                  </span>
+                  <span class="price">
+                    $49
+                  </span>
+                </div>
+              </div>
+              <div class="input">
+                <span class="placeholder">
+                  Type a message…
+                </span>
+                <div class="send-button"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="text-content">
+          <h1 class="title">
+            Simple booking
+          </h1>
+          <p class="lead">
+            Stay in touch with our dog walkers through&nbsp;the&nbsp;chat interface. This makes&nbsp;it easy&nbsp;to
+            &nbsp;discuss arrangements and&nbsp;make bookings. Once the walk has&nbsp;been completed you&nbsp;can rate
+            your&nbsp;walker and book&nbsp;again all&nbsp;through the&nbsp;chat.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
+    Coded by <a href="#">Your Name Here</a>.
+  </div>
+  <script>
+
+    function $$class(className, context) {
+      context = context || document;
+      return context.querySelector(className);
+    }
+
+    function $class(className, context) {
+      context = context || document;
+      return [...context.querySelectorAll(className)];
+    }
+
+    let phone = $$class('.phone-mockup');
+    let income = $class('.income-message', phone);
+    let sent = $class('.sent-message', phone);
+    let walkOptions = $class('.walk-option', phone);
+
+    let button = $$class('.send-button', phone);
+    let input = $$class('.input', phone);
+
+
+    function buttonClick() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          button.classList.add('active');
+          resolve();
+        }, 1000);
+      });
+    }
+    function buttonUnclick() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          button.classList.remove('active');
+          resolve();
+        }, 1000)
+      })
+    }
+
+    // async function clicker() {
+    //   while (true) {
+    //     await buttonClick();
+    //     await buttonUnclick();
+    //   }
+    // }
+    // clicker();
+
+  </script>
+</body>
+
+</html>
