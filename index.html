@@ -20,15 +20,15 @@
 <body>
   <main>
     <section class="hero">
-      <div class="decor decor--bright"></div>
-      <div class="decor decor--subtle"></div>
+        <div class="decor decor--bright" data-top></div>
+        <div class="decor decor--subtle"></div>
       <div class="content">
         <div class="illustration">
           <div class="phone-mockup">
             <div class="phone-header">
               <span class="arrow-back">
                 <svg width="8" height="12" viewbox="0 0 6 12" fill="none">
-                  <path stroke="#fff" stroke-width="2" d="M 3,0 L 0,6 L 3,12"/>
+                  <path stroke="#fff" stroke-width="2" d="M 3,0 L 0,6 L 3,12" />
                 </svg>
               </span>
               <div class="content">
@@ -108,7 +108,7 @@
             </div>
           </div>
         </div>
-  
+
         <div class="text-content">
           <h1 class="title">
             Simple booking
@@ -140,7 +140,7 @@
       return [...context.querySelectorAll(className)];
     }
 
-    let phone = $$class('.phone-mockup');
+    let phone = $$class('.illustration');
     let income = $class('.income-message', phone);
     let sent = $class('.sent-message', phone);
     let walkOptions = $class('.walk-option', phone);
@@ -148,31 +148,89 @@
     let button = $$class('.send-button', phone);
     let input = $$class('.input', phone);
 
+    let decors = $class('.decor');
 
-    function buttonClick() {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          button.classList.add('active');
-          resolve();
-        }, 1000);
+    function animate({ timing, draw, duration }) {
+      return new Promise(resolve => {
+        let start = performance.now();
+
+        requestAnimationFrame(function animate(time) {
+          let timeFraction = (time - start) / duration;
+          if (timeFraction > 1) timeFraction = 1;
+
+          let progress = timing(timeFraction);
+
+          draw(progress);
+
+          if (timeFraction < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            resolve();
+          }
+        })
       });
     }
-    function buttonUnclick() {
-      return new Promise((resolve) => {
+
+    function makeEaseOut(timing) {
+      return function (timeFraction) {
+        return 1 - timing(1 - timeFraction);
+      };
+    }
+
+    function bounce(timeFraction) {
+      for (let a = 0, b = 1; 1; a += b, b /= 2) {
+        if (timeFraction >= (7 - 4 * a) / 11) {
+          return (
+            -Math.pow((11 - 6 * a - 11 * timeFraction) / 4, 2) + Math.pow(b, 2)
+          );
+        }
+      }
+    }
+
+    function quad(timeFraction) {
+      return Math.pow(timeFraction, 2)
+    }
+
+    let bounceEaseOut = makeEaseOut(bounce);
+    let quadEaseOut = makeEaseOut(quad);
+    function linear(timeFraction) {
+      return timeFraction;
+    }
+
+    function createMessageHistory() {}
+
+    function onPhoneAnimationEnd() {
+      createMessageHistory();
+      console.log('animation over');
+      phone.removeEventListener('animationend', onPhoneAnimationEnd);
+    }
+    phone.addEventListener('animationend', onPhoneAnimationEnd)
+    function pause (n) {
+      return new Promise(resolve => {
         setTimeout(() => {
-          button.classList.remove('active');
           resolve();
-        }, 1000)
+        }, n)
       })
     }
 
-    // async function clicker() {
-    //   while (true) {
-    //     await buttonClick();
-    //     await buttonUnclick();
-    //   }
+    // async function move() {
+    //   await animateIncomeMessage(income[0]);
+    //   await pause(200);
+    //   await animateIncomeMessage(income[1]);
+    //   console.log('done')
     // }
-    // clicker();
+
+    // move();
+
+    function buttonClick() {
+      return new Promise((resolve) => {
+        button.classList.add('active');
+        setTimeout(() => {
+          button.classList.remove('active');
+          resolve();
+        }, 500);
+      });
+    }
 
   </script>
 </body>
