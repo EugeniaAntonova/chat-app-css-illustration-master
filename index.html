@@ -20,8 +20,8 @@
 <body>
   <main>
     <section class="hero">
-        <div class="decor decor--bright" data-top></div>
-        <div class="decor decor--subtle"></div>
+      <div class="decor decor--bright" data-top></div>
+      <div class="decor decor--subtle"></div>
       <div class="content">
         <div class="illustration">
           <div class="phone-mockup">
@@ -70,17 +70,17 @@
                     Here are a few pictures. She’s a happy girl!
                   </span>
                 </div>
-                <div class="sent-message message">
+                <div class="sent-message message animate-message">
                   <span class="text">
                     Can you make it?
                   </span>
                 </div>
-                <div class="income-message message">
+                <div class="income-message message animate-message">
                   <span class="text">
                     She looks so happy! The time we discussed works. How long shall I take her out for?
                   </span>
                 </div>
-                <div class="walk-option">
+                <div class="income-message walk-option animate-message">
                   <span class="radio"></span>
                   <span class="text">
                     30 minute walk
@@ -89,7 +89,7 @@
                     $29
                   </span>
                 </div>
-                <div class="walk-option">
+                <div class="income-message walk-option animate-message">
                   <span class="radio"></span>
                   <span class="text">
                     1 hour walk
@@ -100,6 +100,7 @@
                 </div>
               </div>
               <div class="input">
+                <div class="text"></div>
                 <span class="placeholder">
                   Type a message…
                 </span>
@@ -140,15 +141,17 @@
       return [...context.querySelectorAll(className)];
     }
 
-    let phone = $$class('.illustration');
-    let income = $class('.income-message', phone);
-    let sent = $class('.sent-message', phone);
-    let walkOptions = $class('.walk-option', phone);
+    const content = $$class('.content');
+    const phone = $$class('.illustration');
 
-    let button = $$class('.send-button', phone);
-    let input = $$class('.input', phone);
+    const messagesToAnimate = $class('.animate-message', phone);
 
-    let decors = $class('.decor');
+    const button = $$class('.send-button', phone);
+    const input = $$class('.input .text', phone);
+
+    const decors = $class('.decor');
+
+
 
     function animate({ timing, draw, duration }) {
       return new Promise(resolve => {
@@ -177,35 +180,70 @@
       };
     }
 
-    function bounce(timeFraction) {
-      for (let a = 0, b = 1; 1; a += b, b /= 2) {
-        if (timeFraction >= (7 - 4 * a) / 11) {
-          return (
-            -Math.pow((11 - 6 * a - 11 * timeFraction) / 4, 2) + Math.pow(b, 2)
-          );
-        }
-      }
-    }
-
     function quad(timeFraction) {
       return Math.pow(timeFraction, 2)
     }
 
-    let bounceEaseOut = makeEaseOut(bounce);
     let quadEaseOut = makeEaseOut(quad);
-    function linear(timeFraction) {
-      return timeFraction;
+
+    function getPhoneTranslate() {
+      if (window.innerWidth < 740) return 0;
+
+      let shift = Math.round((((content.clientWidth - phone.clientWidth) / 2) / phone.clientWidth) * 100);
+      return shift;
     }
 
-    function createMessageHistory() {}
-
-    function onPhoneAnimationEnd() {
-      createMessageHistory();
-      console.log('animation over');
-      phone.removeEventListener('animationend', onPhoneAnimationEnd);
+    const animatePhone = () => {
+      return animate({
+        timing: quadEaseOut,
+        duration: 600,
+        draw: (progress) => {
+          phone.style.setProperty('--opacity', progress);
+          phone.style.setProperty('--translate', `${getPhoneTranslate()}% ${-30 + 30 * progress}%`)
+        }
+      })
     }
-    phone.addEventListener('animationend', onPhoneAnimationEnd)
-    function pause (n) {
+
+    const animateMessage = (message, direction) => {
+      return animate({
+        timing: quadEaseOut,
+        duration: 300,
+        draw: (progress) => {
+          message.style.setProperty('--opacity', `${progress}`);
+          message.style.setProperty('--translate', `${100 * direction + 100 * (-direction) * progress}% ${50 - 50 * progress}%`);
+        }
+      })
+    }
+
+    const printMessage = (text) => {
+      return animate({
+        timing: quadEaseOut,
+        duration: text.length * 60,
+        draw: (progress) => {
+          let result = Math.ceil(text.length * progress);
+          input.textContent = text.slice(0, result);
+        }
+      })
+    }
+
+    function createMessageHistory() {
+      messagesToAnimate.reduce((promiseChain, message) => {
+        return promiseChain.then(() => {
+          if (message.classList.contains('sent-message')) {
+            let text = $$class('.text', message).textContent;
+            console.log(input);
+            return printMessage(text)
+              .then(() => buttonClick())
+              .then(() => input.textContent = '')
+              .then(() => pause(200))
+              .then(() => animateMessage(message, 1))
+              .then(() => pause(400));
+          }
+          return animateMessage(message, -1).then(() => pause(400));
+        });
+      }, Promise.resolve());
+    }
+    function pause(n) {
       return new Promise(resolve => {
         setTimeout(() => {
           resolve();
@@ -213,24 +251,28 @@
       })
     }
 
-    // async function move() {
-    //   await animateIncomeMessage(income[0]);
-    //   await pause(200);
-    //   await animateIncomeMessage(income[1]);
-    //   console.log('done')
-    // }
-
-    // move();
-
     function buttonClick() {
       return new Promise((resolve) => {
         button.classList.add('active');
-        setTimeout(() => {
+
+        const onAnimationEnd = () => {
           button.classList.remove('active');
+          button.removeEventListener('animationend', onAnimationEnd);
           resolve();
-        }, 500);
+        }
+
+        button.addEventListener('animationend', onAnimationEnd);
       });
     }
+
+
+    let message = document.querySelector('.animate-message');
+    document.addEventListener('DOMContentLoaded', () => {
+      decors[0].addEventListener('animationend', () => {
+        animatePhone()
+          .then(() => createMessageHistory())
+      })
+    })
 
   </script>
 </body>
