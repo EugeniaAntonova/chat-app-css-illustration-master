@@ -594,6 +594,7 @@ h3 {
 
 .attribution {
     position: fixed;
+    z-index: 2;
     top: 12px;
     left: 50%;
     translate: -50% 0;
