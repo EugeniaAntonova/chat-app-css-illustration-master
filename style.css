@@ -49,16 +49,9 @@ h3 {
 }
 
 .illustration {
-    --opacity: 0;
     position: relative;
     flex: 1 0 244px;
     justify-items: center;
-
-    opacity: var(--opacity);
-    translate: var(--translate);
-    /* opacity: 0; */
-    /* translate: 0 -50%;
-    animation: slide .5s ease-in-out 1.7s 1 forwards; */
 }
 
 .phone-mockup {
@@ -292,20 +285,6 @@ h3 {
     min-height: 1rem;
 }
 
-.input :where(.text:empty, .text.blick)::after {
-    content: "";
-    position: absolute;
-    inset: 0 0 0 auto;
-    width: 1px;
-    background-color: currentColor;
-    opacity: 0;
-    animation: blick .5s ease infinite;
-}
-
-.text:not(:empty)+.placeholder {
-    opacity: 0
-}
-
 .input .placeholder,
 .input .text {
     grid-area: 1 / 1 / 2 / 2;
@@ -324,20 +303,6 @@ h3 {
 .send-button::after {
     content: "";
     position: absolute;
-}
-
-.send-button::before {
-    width: 90%;
-    inset: 0;
-    margin: auto;
-    opacity: 1;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    border: 1px solid var(--main-heading);
-}
-
-.send-button.active::before {
-    animation: radar .2s ease-out 1;
 }
 
 .send-button::after {
@@ -375,11 +340,11 @@ h3 {
     --h: 55%;
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: var(--h);
     max-width: 700px;
-    background-size: 100% 0%;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
-    animation: growth 1.5s ease-in-out 1 forwards;
+    border-radius: var(--r);
 }
 
 .hero>.decor--bright {
@@ -406,83 +371,169 @@ h3 {
     text-align: center;
 }
 
-.text-content > * {
-    --opacity: 0;
-    opacity: var(--opacity);
-    translate: var(--translate);
-    /* animation: slide .3s ease-in-out var(--delay) 1 forwards; */
-}
-
 .text-content h1.title {
-    --delay: 2.2s;
     margin-bottom: 26px;
     font-size: 40px;
     color: var(--main-heading);
 }
 
 .text-content .lead {
-    --delay: 2.5s;
     line-height: 1.75;
     color: var(--paragraph);
 }
 
-.animate-message {
-    --opacity: 0;
-    opacity: var(--opacity);
-    translate: var(--translate);
-}
+@media (prefers-reduced-motion: no-preference) {
 
-@keyframes radar {
-    from {
-        opacity: 1;
-        scale: 1;
+    .illustration {
+        --opacity: 0;
+        --translate-x: 0;
+        --translate-y: -30%;
+
+        opacity: var(--opacity);
+        translate: var(--translate-x) var(--translate-y);
     }
 
-    to {
+    .input :where(.text:empty, .text.blick)::after {
+        content: "";
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 1px;
+        background-color: currentColor;
         opacity: 0;
-        scale: 1.5;
-    }
-}
-
-@keyframes blick {
-    from {
-        opacity: 0;
+        animation: blick .4s ease infinite alternate;
     }
 
-    to {
+    .text:not(:empty)+.placeholder {
+        opacity: 0
+    }
+
+    .send-button::before {
+        width: 90%;
+        inset: 0;
+        margin: auto;
         opacity: 1;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        border: 1px solid var(--main-heading);
     }
-}
 
-@keyframes growth {
-    0% {
+    .send-button.active::before {
+        animation: radar .2s ease-out 1;
+    }
+
+    .hero>.decor {
+        --h: 55%;
+        position: absolute;
+        width: 100%;
         height: 100%;
-        background-position: center var(--max);
+        max-width: 700px;
         background-size: 100% 0%;
-    }
-    60% {
-        height: 100%;
+        background-repeat: no-repeat;
+        animation: growth 1.5s ease-in-out 1 forwards;
         border-radius: 0;
-        background-position: center var(--max);
-        background-size: 100% 100%;
-    }
-    100% {
-        height: var(--h);
-        border-radius: var(--r);
-        background-position: center var(--min);
-        background-size: 100% 100%;
     }
 
-}
+    .hero>.decor--bright {
+        --r: 0 0 500px 500px;
+        --max: 100%;
+        --min: 0%;
+        top: 0;
+        left: -50%;
+        background-image: linear-gradient(var(--Light-Magenta), var(--Light-Violet));
+        background-position: 50% 0%;
+    }
 
-@keyframes slide {
-    from {
-        opacity: 0;
-        translate: 0 -50%;
-    }    
-    to {
-        opacity: 1;
-        translate: 0;
+    .hero>.decor--subtle {
+        --r: 500px 500px 0 0;
+        --max: 0%;
+        --min: 100%;
+        bottom: 0;
+        right: -50%;
+        background-image: linear-gradient(#f4f1f8, #f4f1f8);
+        background-position: center bottom;
+    }
+
+    .text-content>* {
+        --opacity: 0;
+        opacity: var(--opacity);
+        translate: 0 -5rem;
+        animation: slide .3s ease-in-out var(--delay) 1 forwards;
+        animation-play-state: paused;
+    }
+
+    .text-content.show>* {
+        animation-play-state: running;
+    }
+
+    .text-content h1.title {
+        --delay: 0s;
+    }
+
+    .text-content .lead {
+        --delay: .2s;
+    }
+
+    .animate-message {
+        --opacity: 0;
+        opacity: var(--opacity);
+        translate: var(--translate);
+    }
+
+    @keyframes radar {
+        from {
+            opacity: 1;
+            scale: 1;
+        }
+
+        to {
+            opacity: 0;
+            scale: 1.5;
+        }
+    }
+
+    @keyframes blick {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes growth {
+        0% {
+            height: 100%;
+            background-position: center var(--max);
+            background-size: 100% 0%;
+        }
+
+        60% {
+            height: 100%;
+            border-radius: 0;
+            background-position: center var(--max);
+            background-size: 100% 100%;
+        }
+
+        100% {
+            height: var(--h);
+            border-radius: var(--r);
+            background-position: center var(--min);
+            background-size: 100% 100%;
+        }
+
+    }
+
+    @keyframes slide {
+        from {
+            opacity: 0;
+            translate: 0 -5rem;
+        }
+
+        to {
+            opacity: 1;
+            translate: 0;
+        }
     }
 }
 
@@ -501,7 +552,15 @@ h3 {
 
     .hero>.decor {
         --h: 90%;
-        height: 0;
+        height: var(--h);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    @media (min-width: 740px) {
+        .hero>.decor {
+            height: 100%;
+        }
     }
 }
 
@@ -532,9 +591,6 @@ h3 {
         translate: 40% 0;
     }
 }
-
-@media (min-width: 1440px) {}
-
 
 .attribution {
     position: fixed;

@@ -127,7 +127,7 @@
 
   <div class="attribution">
     Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
-    Coded by <a href="#">Your Name Here</a>.
+    Coded by <a href="https://www.linkedin.com/in/eugenia-antonova-7b4511276/">Evgenija Antonova</a>.
   </div>
   <script>
 
@@ -143,6 +143,7 @@
 
     const content = $$class('.content');
     const phone = $$class('.illustration');
+    const textContent = $$class('.text-content', content);
 
     const messagesToAnimate = $class('.animate-message', phone);
 
@@ -186,12 +187,12 @@
 
     let quadEaseOut = makeEaseOut(quad);
 
-    function getPhoneTranslate() {
+    let shift = (function getPhoneTranslate() {
       if (window.innerWidth < 740) return 0;
 
       let shift = Math.round((((content.clientWidth - phone.clientWidth) / 2) / phone.clientWidth) * 100);
       return shift;
-    }
+    }) ()
 
     const animatePhone = () => {
       return animate({
@@ -199,7 +200,17 @@
         duration: 600,
         draw: (progress) => {
           phone.style.setProperty('--opacity', progress);
-          phone.style.setProperty('--translate', `${getPhoneTranslate()}% ${-30 + 30 * progress}%`)
+          phone.style.setProperty('--translate-x', `${shift}%`)
+          phone.style.setProperty('--translate-y', `${-30 + 30 * progress}%`)
+        }
+      })
+    }
+    const returnPhone = () => {
+      return animate({
+        timing: quadEaseOut,
+        duration: shift * 20,
+        draw: (progress) => {
+          phone.style.setProperty('--translate-x', `${shift - shift * progress}%`)
         }
       })
     }
@@ -218,7 +229,7 @@
     const printMessage = (text) => {
       return animate({
         timing: quadEaseOut,
-        duration: text.length * 60,
+        duration: (text.length) * 60,
         draw: (progress) => {
           let result = Math.ceil(text.length * progress);
           input.textContent = text.slice(0, result);
@@ -227,11 +238,10 @@
     }
 
     function createMessageHistory() {
-      messagesToAnimate.reduce((promiseChain, message) => {
+      return messagesToAnimate.reduce((promiseChain, message) => {
         return promiseChain.then(() => {
           if (message.classList.contains('sent-message')) {
-            let text = $$class('.text', message).textContent;
-            console.log(input);
+            let text = $$class('.text', message).textContent.trim();
             return printMessage(text)
               .then(() => buttonClick())
               .then(() => input.textContent = '')
@@ -265,12 +275,12 @@
       });
     }
 
-
-    let message = document.querySelector('.animate-message');
     document.addEventListener('DOMContentLoaded', () => {
       decors[0].addEventListener('animationend', () => {
         animatePhone()
           .then(() => createMessageHistory())
+          .then(() => returnPhone())
+          .then(() => {textContent.classList.add('show')})
       })
     })
 
