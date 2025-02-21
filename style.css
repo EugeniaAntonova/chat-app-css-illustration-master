@@ -381,7 +381,7 @@ h3 {
     line-height: 1.75;
     color: var(--paragraph);
 }
-
+/* 
 @media (prefers-reduced-motion: no-preference) {
 
     .illustration {
@@ -535,7 +535,7 @@ h3 {
             translate: 0;
         }
     }
-}
+} */
 
 
 @media (min-width: 740px) {
@@ -555,14 +555,14 @@ h3 {
         height: var(--h);
     }
 }
-
+/* 
 @media (prefers-reduced-motion: no-preference) {
     @media (min-width: 740px) {
         .hero>.decor {
             height: 100%;
         }
     }
-}
+} */
 
 @media (min-width: 1024px) {
     .hero>.content {
