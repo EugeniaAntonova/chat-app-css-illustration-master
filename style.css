@@ -418,7 +418,7 @@ h3 {
     }
 
     .send-button.active::before {
-        animation: radar .2s ease-out 1;
+        animation: radar .5s ease-out 1;
     }
 
     .hero>.decor {
